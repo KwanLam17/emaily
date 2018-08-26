@@ -3,7 +3,20 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const mongoose = require('mongoose');
 const keys = require('../config/keys');
 
+
 const User = mongoose.model('users');
+
+// user -> user.id -> cookie
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+// cookie -> user.id -> user
+passport.deserializeUser((id, done) => {
+    User.findById(id).then(user => {
+        done(null, user);
+    });
+});
 
 passport.use(
     new GoogleStrategy({
@@ -14,14 +27,18 @@ passport.use(
         //console.log('access token', accessToken);
         //console.log('refresh token', refreshToken);
         //console.log('profile:', profile);
-        User.findOne({ googleID: profile.id })
-            .then((existingUser) => {
-                if(existingUser) {
-                    // we already have a record of this User
-                }
-                else {
-                    new User({ googleID: profile.id }).save();  
-                }
-            });
+        User.findOne({ googleID: profile.id }).then((existingUser) => {
+            if(existingUser) {
+                // we already have a record of this User
+                done(null, existingUser);
+            }
+            else {
+                new User({ 
+                    googleID: profile.id 
+                }).save().then(user => done(null, user)); 
+            }
+        });
+        
+        
     })
 );
