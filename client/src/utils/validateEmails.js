@@ -5,11 +5,12 @@ export default (emails) => {
         .split(',')
         .map(email => email.trim())
         .filter(email => re.test(email) === false);
-    
-    if (invalidEmailsArray) {
+    //console.log(invalidEmailsArray);
+
+    if (invalidEmailsArray.length) {
         return `These emails are invalid: ${invalidEmailsArray}`;
     }
     
-    return;
+    return '';
 
 };
