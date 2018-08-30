@@ -3,7 +3,7 @@ const helper = sendgrid.mail;
 const keys = require('../config/keys');
 
 class Mailer extends helper.Mail {
-    constructor({ subject, recipients }, contact) {
+    constructor({ subject, recipients }, content) {
         super();
 
         this.sgApi = sendgrid(keys.sendGridKey);
@@ -27,7 +27,7 @@ class Mailer extends helper.Mail {
         const trackingSettings = new helper.TrackingSettings();
         const clickSettings = new helper.ClickTracking(true, true);
 
-        trackingSettings.setClickTracking(ClickTracking);
+        trackingSettings.setClickTracking(clickSettings);
         this.addTrackingSettings(trackingSettings);
     }
 
